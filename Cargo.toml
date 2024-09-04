@@ -1,0 +1,32 @@
+[package]
+name = "wasm-tracing"
+version = "0.1.0"
+authors = ["Daniel Gallups <dsgallups@protonmail.com>"]
+edition = "2021"
+categories = [
+    "development-tools::debugging",
+    "development-tools::profiling",
+    "no-std",
+    "wasm",
+]
+description = "Tracing subscriber for WebAssembly"
+keywords = ["logging", "metrics", "wasm", "spans", "tracing"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/dsgallups/wasm-tracing"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+rayon = { version = "1.5", optional = true }
+tracing = { version = "0.1", features = [
+    "attributes",
+], default-features = false }
+tracing-subscriber = { version = "0.3", features = [
+    "registry",
+], default-features = false }
+wasm-bindgen = { version = "0.2" }
+
+[features]
+mark-with-rayon-thread-index = ["rayon"]
