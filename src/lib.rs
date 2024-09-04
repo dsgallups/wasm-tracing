@@ -56,7 +56,7 @@ mod test {
 
         let config = builder.build();
 
-        assert_eq!(config.report_logs_in_timings, false);
+        assert!(!config.report_logs_in_timings);
     }
 
     #[test]
@@ -66,8 +66,8 @@ mod test {
 
         let config = builder.build();
 
-        assert_eq!(config.report_logs_in_console, false);
-        assert_eq!(config.use_console_color, false);
+        assert!(!config.report_logs_in_console);
+        assert!(!config.use_console_color);
     }
 
     #[test]
@@ -77,8 +77,8 @@ mod test {
 
         let config = builder.build();
 
-        assert_eq!(config.report_logs_in_console, true);
-        assert_eq!(config.use_console_color, false);
+        assert!(config.report_logs_in_console);
+        assert!(!config.use_console_color);
     }
 
     #[test]
@@ -88,8 +88,8 @@ mod test {
 
         let config = builder.build();
 
-        assert_eq!(config.report_logs_in_console, true);
-        assert_eq!(config.use_console_color, true);
+        assert!(config.report_logs_in_console);
+        assert!(config.use_console_color);
     }
 
     #[test]
