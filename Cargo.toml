@@ -1,6 +1,6 @@
 [package]
 name = "wasm-tracing"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Daniel Gallups <dsgallups@protonmail.com>"]
 edition = "2021"
 categories = [
