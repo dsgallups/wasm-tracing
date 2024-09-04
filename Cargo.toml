@@ -1,6 +1,6 @@
 [package]
 name = "wasm-tracing"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Daniel Gallups <dsgallups@protonmail.com>"]
 edition = "2021"
 categories = [
@@ -9,7 +9,7 @@ categories = [
     "no-std",
     "wasm",
 ]
-description = "Tracing subscriber for WebAssembly"
+description = "Tracing subscriber for WebAssembly. Maintained fork of tracing-wasm."
 keywords = ["logging", "metrics", "wasm", "spans", "tracing"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
