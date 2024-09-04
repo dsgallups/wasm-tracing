@@ -18,11 +18,11 @@ Leverage performance profiling with your browser tools with the [tracing crate](
 [apache-2-badge]: https://img.shields.io/badge/license-APACHE%202.0-blue.svg
 [apache-2-url]: LICENSE-APACHE
 
-Note: `tracing_wasm` uses the global JavaScript `console` and `performance` objects. It will not work in environments where one or both of these are not available, such as Node.js or Cloudflare Workers.
+Note: `wasm_tracing` uses the global JavaScript `console` and `performance` objects. It will not work in environments where one or both of these are not available, such as Node.js or Cloudflare Workers.
 
 ## Usage
 
-For the simplest out of the box set-up, you can simply set `tracing_wasm` as your default tracing Subscriber in wasm_bindgen(start)
+For the simplest out of the box set-up, you can simply set `wasm_tracing` as your default tracing Subscriber in wasm_bindgen(start)
 
 We have this declared in our `./src/lib.rs`
 
@@ -34,7 +34,7 @@ pub fn start() -> Result<(), JsValue> {
     console_error_panic_hook::set_once();
 
     // Add this line:
-    tracing_wasm::set_as_global_default();
+    wasm_tracing::set_as_global_default();
 
     Ok(())
 }
