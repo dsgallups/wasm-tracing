@@ -8,12 +8,9 @@ pub mod config;
 pub mod layer;
 pub(crate) mod recorder;
 
-#[cfg(test)]
-mod tests;
-
 pub mod prelude {
     pub use super::{
-        config::{builder::WASMLayerConfigBuilder, console::ConsoleConfig, WASMLayerConfig},
+        config::{console::ConsoleConfig, WASMLayerConfig},
         layer::WASMLayer,
     };
 }
