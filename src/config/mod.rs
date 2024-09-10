@@ -4,11 +4,11 @@ pub mod console;
 
 #[derive(Debug, PartialEq)]
 pub struct WASMLayerConfig {
-    report_logs_in_timings: bool,
-    report_logs_in_console: bool,
-    use_console_color: bool,
-    max_level: tracing::Level,
-    show_fields: bool,
+    pub(crate) report_logs_in_timings: bool,
+    pub(crate) report_logs_in_console: bool,
+    pub(crate) use_console_color: bool,
+    pub(crate) max_level: tracing::Level,
+    pub(crate) show_fields: bool,
 }
 
 impl Default for WASMLayerConfig {

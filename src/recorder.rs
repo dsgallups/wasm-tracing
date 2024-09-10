@@ -1,11 +1,19 @@
-struct StringRecorder {
-    display: String,
-    is_following_args: bool,
-    show_fields: bool,
-    fields: HashMap<String, String>,
+use core::{
+    default::Default,
+    fmt::{self, Write},
+};
+use std::collections::HashMap;
+
+use tracing::field::{Field, Visit};
+
+pub struct StringRecorder {
+    pub display: String,
+    pub is_following_args: bool,
+    pub show_fields: bool,
+    pub fields: HashMap<String, String>,
 }
 impl StringRecorder {
-    fn new(show_fields: bool) -> Self {
+    pub fn new(show_fields: bool) -> Self {
         StringRecorder {
             show_fields,
             ..Default::default()

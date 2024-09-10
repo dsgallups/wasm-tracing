@@ -1,4 +1,4 @@
-use super::console::ConsoleConfig;
+use super::{console::ConsoleConfig, WASMLayerConfig};
 
 pub struct WASMLayerConfigBuilder {
     /// Log events will be marked and measured so they appear in performance Timings
