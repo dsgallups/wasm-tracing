@@ -29,5 +29,9 @@ tracing-subscriber = { version = "0.3", features = [
 ], default-features = false }
 wasm-bindgen = { version = "0.2" }
 
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.0"
+
 [features]
 mark-with-rayon-thread-index = ["rayon"]

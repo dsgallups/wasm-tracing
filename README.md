@@ -11,8 +11,8 @@ Leverage performance profiling with your browser tools with the [tracing crate](
 
 [crates-badge]: https://img.shields.io/crates/v/wasm-tracing.svg
 [crates-url]: https://crates.io/crates/wasm-tracing
-[docs-badge]: https://docs.rs/tracing-wasm/badge.svg
-[docs-url]: https://docs.rs/tracing-wasm
+[docs-badge]: https://docs.rs/wasm-tracing/badge.svg
+[docs-url]: https://docs.rs/wasm-tracing
 [mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [mit-url]: LICENSE-MIT
 [apache-2-badge]: https://img.shields.io/badge/license-APACHE%202.0-blue.svg
