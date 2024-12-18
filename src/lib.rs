@@ -134,6 +134,7 @@ Given a [`WasmLayerConfig`], set WASM to be the default recorder.
 use console_error_panic_hook;
 use wasm_bindgen::prelude::*;
 use wasm_tracing::prelude::*;
+use tracing::Level;
 
 #[wasm_bindgen(start)]
 pub fn start() -> Result<(), JsValue> {
