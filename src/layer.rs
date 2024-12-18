@@ -11,27 +11,27 @@ use crate::{
 };
 
 /// Implements [tracing_subscriber::layer::Layer] which uses [wasm_bindgen] for marking and measuring with `window.performance`
-pub struct WASMLayer {
+pub struct WasmLayer {
     last_event_id: AtomicUsize,
-    config: WASMLayerConfig,
+    config: WasmLayerConfig,
 }
 
-impl WASMLayer {
-    pub fn new(config: WASMLayerConfig) -> Self {
-        WASMLayer {
+impl WasmLayer {
+    pub fn new(config: WasmLayerConfig) -> Self {
+        WasmLayer {
             last_event_id: AtomicUsize::new(0),
             config,
         }
     }
 }
 
-impl core::default::Default for WASMLayer {
+impl core::default::Default for WasmLayer {
     fn default() -> Self {
-        WASMLayer::new(WASMLayerConfig::default())
+        WasmLayer::new(WasmLayerConfig::default())
     }
 }
 
-impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WASMLayer {
+impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
     fn enabled(&self, metadata: &tracing::Metadata<'_>, _: Context<'_, S>) -> bool {
         let level = metadata.level();
         level <= &self.config.max_level

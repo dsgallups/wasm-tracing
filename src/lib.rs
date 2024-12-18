@@ -38,8 +38,8 @@ pub(crate) mod recorder;
 
 pub mod prelude {
     pub use super::{
-        config::{console::ConsoleConfig, WASMLayerConfig},
-        layer::WASMLayer,
+        config::{console::ConsoleConfig, WasmLayerConfig},
+        layer::WasmLayer,
     };
 }
 use prelude::*;
@@ -91,7 +91,7 @@ fn mark_name(id: &tracing::Id) -> String {
 /// Set the global default with [tracing::subscriber::set_global_default]. Panics if the [WASMLayer] cannot be constructed.
 pub fn set_as_global_default() {
     tracing::subscriber::set_global_default(
-        Registry::default().with(WASMLayer::new(WASMLayerConfig::default())),
+        Registry::default().with(WasmLayer::new(WasmLayerConfig::default())),
     )
     .expect("default global");
 }
@@ -117,7 +117,7 @@ pub fn start() -> Result<(), JsValue> {
 "#]
 pub fn try_set_as_global_default() -> Result<(), SetGlobalDefaultError> {
     tracing::subscriber::set_global_default(
-        Registry::default().with(WASMLayer::new(WASMLayerConfig::default())),
+        Registry::default().with(WasmLayer::new(WasmLayerConfig::default())),
     )
 }
 
@@ -143,7 +143,7 @@ pub fn start() -> Result<(), JsValue> {
 }
 ```
 "#]
-pub fn set_as_global_default_with_config(config: WASMLayerConfig) {
-    tracing::subscriber::set_global_default(Registry::default().with(WASMLayer::new(config)))
+pub fn set_as_global_default_with_config(config: WasmLayerConfig) {
+    tracing::subscriber::set_global_default(Registry::default().with(WasmLayer::new(config)))
         .expect("default global");
 }
