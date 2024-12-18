@@ -92,7 +92,11 @@ fn mark_name(id: &tracing::Id) -> String {
     )
 }
 
-/// Set the global default recorder with [tracing::subscriber::set_global_default]. Panics if the [WasmLayer] cannot be constructed.
+#[doc = r#"
+    Set the global default recorder with [tracing::subscriber::set_global_default]. Panics if the [WasmLayer] cannot be constructed.
+
+    Panics if a global default is already set.
+"#]
 pub fn set_as_global_default() {
     tracing::subscriber::set_global_default(
         Registry::default().with(WasmLayer::new(WasmLayerConfig::default())),
@@ -101,7 +105,8 @@ pub fn set_as_global_default() {
 }
 
 #[doc = r#"
-Set WASM to be the default recorder with [tracing::subscriber::set_global_default].
+Set WASM to be the default layer for a [Registry] via [tracing::subscriber::set_global_default].
+
 
 ## Example
 
@@ -126,7 +131,7 @@ pub fn try_set_as_global_default() -> Result<(), SetGlobalDefaultError> {
 }
 
 #[doc = r#"
-Given a [`WasmLayerConfig`], set WASM to be the default recorder.
+Given a [`WasmLayerConfig`], set WASM to be the default layer for a [Registry].
 
 ## Example
 
@@ -142,13 +147,14 @@ pub fn start() -> Result<(), JsValue> {
 
     let config = WasmLayerConfig::new().set_report_logs_in_timings(true).set_max_level(Level::ERROR).to_owned();
 
-    wasm_tracing::set_as_global_default_with_config(config);
+    let _ = wasm_tracing::set_as_global_default_with_config(config);
 
     Ok(())
 }
 ```
 "#]
-pub fn set_as_global_default_with_config(config: WasmLayerConfig) {
+pub fn set_as_global_default_with_config(
+    config: WasmLayerConfig,
+) -> Result<(), SetGlobalDefaultError> {
     tracing::subscriber::set_global_default(Registry::default().with(WasmLayer::new(config)))
-        .expect("default global");
 }
