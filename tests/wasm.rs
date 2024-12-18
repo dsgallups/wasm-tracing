@@ -12,7 +12,7 @@ pub fn simple_test() {
         .set_show_origin(false)
         .set_show_fields(false)
         .to_owned();
-    wasm_tracing::set_as_global_default_with_config(config);
+    wasm_tracing::set_as_global_default_with_config(config).unwrap();
 
     throw_events();
 }

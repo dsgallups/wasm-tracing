@@ -13,13 +13,37 @@ use crate::{
 #[deprecated(since = "1.0.0", note = "Rename WASMLayer to WasmLayer.")]
 pub type WASMLayer = WasmLayer;
 
-/// Implements [tracing_subscriber::layer::Layer] which uses [wasm_bindgen] for marking and measuring with `window.performance`
+#[doc = r#"
+Implements [tracing_subscriber::layer::Layer] which uses [wasm_bindgen] for marking and measuring via `window.performance` and `window.console`
+
+If composing a subscriber, provide `WasmLayer` as such:
+
+```notest
+use tracing_subscriber::prelude::*;
+use tracing::Subscriber;
+
+pub struct MySubscriber {
+    // ...
+}
+
+impl Subscriber for MySubscriber {
+    // ...
+}
+
+let subscriber = MySubscriber::new()
+    .with(WasmLayer::default());
+
+tracing::subscriber::set_global_default(subscriber);
+```
+
+"#]
 pub struct WasmLayer {
     last_event_id: AtomicUsize,
     config: WasmLayerConfig,
 }
 
 impl WasmLayer {
+    /// Create a new [Layer] with the provided config
     pub fn new(config: WasmLayerConfig) -> Self {
         WasmLayer {
             last_event_id: AtomicUsize::new(0),
@@ -28,7 +52,7 @@ impl WasmLayer {
     }
 }
 
-impl core::default::Default for WasmLayer {
+impl Default for WasmLayer {
     fn default() -> Self {
         WasmLayer::new(WasmLayerConfig::default())
     }
@@ -56,7 +80,6 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
         }
     }
 
-    /// doc: Notifies this layer that a span with the given Id recorded the given values.
     fn on_record(&self, id: &tracing::Id, values: &tracing::span::Record<'_>, ctx: Context<'_, S>) {
         if let Some(span_ref) = ctx.span(id) {
             if let Some(debug_record) = span_ref.extensions_mut().get_mut::<StringRecorder>() {
@@ -65,9 +88,6 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
         }
     }
 
-    // /// doc: Notifies this layer that a span with the ID span recorded that it follows from the span with the ID follows.
-    // fn on_follows_from(&self, _span: &tracing::Id, _follows: &tracing::Id, ctx: Context<'_, S>) {}
-    /// doc: Notifies this layer that an event has occurred.
     fn on_event(&self, event: &tracing::Event<'_>, ctx: Context<'_, S>) {
         if !self.config.report_logs_in_timings && !self.config.console.reporting_enabled() {
             return;
@@ -160,13 +180,13 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
             ConsoleConfig::NoReporting => unreachable!(),
         };
     }
-    /// Notifies this layer that a span with the given ID was entered.
+
     fn on_enter(&self, id: &tracing::Id, _ctx: Context<'_, S>) {
         if self.config.report_logs_in_timings {
             mark(&mark_name(id));
         }
     }
-    /// Notifies this layer that the span with the given ID was exited.
+
     fn on_exit(&self, id: &tracing::Id, ctx: Context<'_, S>) {
         if !self.config.report_logs_in_timings {
             return;
@@ -198,15 +218,4 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
             }
         }
     }
-
-    // //If [WasmLayerConfig::report_logs_in_timings] is true, the mark is discarded
-    // fn on_close(&self, id: tracing::Id, _ctx: Context<'_, S>) {
-    // if self.config.report_logs_in_timings {
-    // clear_mark(&mark_name(&id))
-    // }
-    // }
-
-    // /// doc: Notifies this layer that a span ID has been cloned, and that the subscriber returned a different ID.
-    // /// I'm not sure if I need to do something here...
-    // fn on_id_change(&self, _old: &tracing::Id, _new: &tracing::Id, ctx: Context<'_, S>) {}
 }

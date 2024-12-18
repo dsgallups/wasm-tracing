@@ -5,12 +5,12 @@ pub use console::*;
 #[deprecated(since = "1.0.0", note = "Rename WASMLayerConfig to WasmLayerConfig.")]
 pub type WASMLayerConfig = WasmLayerConfig;
 
-#[doc = r#"
-Configuration parameters for the [WasmLayer](crate::prelude::WasmLayer).
-"#]
+///Configuration parameters for the [WasmLayer](crate::prelude::WasmLayer).
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct WasmLayerConfig {
+    /// In dev-tools, report timings of traces
     pub report_logs_in_timings: bool,
+    /// See [ConsoleConfig]
     pub console: ConsoleConfig,
     /// Maximum log level
     pub max_level: tracing::Level,
@@ -33,6 +33,7 @@ impl Default for WasmLayerConfig {
 }
 
 impl WasmLayerConfig {
+    /// Create a default [WasmLayerConfig]
     pub fn new() -> WasmLayerConfig {
         WasmLayerConfig::default()
     }
@@ -66,6 +67,7 @@ impl WasmLayerConfig {
         self
     }
 
+    /// True if the console reporting spans
     pub fn console_enabled(&self) -> bool {
         self.console.reporting_enabled()
     }

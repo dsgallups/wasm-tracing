@@ -1,3 +1,4 @@
+#![deny(missing_docs)]
 #![doc = r#"
 # `wasm-tracing`
 
@@ -40,7 +41,7 @@ pub use config::*;
 mod layer;
 pub use layer::*;
 pub(crate) mod recorder;
-
+/// Re-exports of common types
 pub mod prelude {
     pub use super::{
         config::{ConsoleConfig, WasmLayerConfig},

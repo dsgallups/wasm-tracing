@@ -10,6 +10,7 @@ pub enum ConsoleConfig {
 }
 
 impl ConsoleConfig {
+    /// True if the console reporting spans
     pub fn reporting_enabled(&self) -> bool {
         !matches!(self, ConsoleConfig::NoReporting)
     }
