@@ -1,5 +1,4 @@
 use wasm_bindgen_test::*;
-//use wasm_tracing::prelude::*;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
