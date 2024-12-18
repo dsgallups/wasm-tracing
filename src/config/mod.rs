@@ -8,12 +8,10 @@ pub type WASMLayerConfig = WasmLayerConfig;
 #[doc = r#"
 Configuration parameters for the [WasmLayer](crate::prelude::WasmLayer).
 "#]
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct WasmLayerConfig {
     pub report_logs_in_timings: bool,
-    pub report_logs_in_console: bool,
-    /// Colorful logs
-    pub use_console_color: bool,
+    pub console: ConsoleConfig,
     /// Maximum log level
     pub max_level: tracing::Level,
     /// Show/hide fields of types
@@ -24,8 +22,7 @@ impl Default for WasmLayerConfig {
     fn default() -> Self {
         WasmLayerConfig {
             report_logs_in_timings: true,
-            report_logs_in_console: true,
-            use_console_color: true,
+            console: ConsoleConfig::ReportWithConsoleColor,
             max_level: tracing::Level::TRACE,
             show_fields: true,
         }
@@ -51,21 +48,7 @@ impl WasmLayerConfig {
 
     /// Set if and how events should be displayed in the browser console
     pub fn set_console_config(&mut self, console_config: ConsoleConfig) -> &mut Self {
-        match console_config {
-            ConsoleConfig::NoReporting => {
-                self.report_logs_in_console = false;
-                self.use_console_color = false;
-            }
-            ConsoleConfig::ReportWithoutConsoleColor => {
-                self.report_logs_in_console = true;
-                self.use_console_color = false;
-            }
-            ConsoleConfig::ReportWithConsoleColor => {
-                self.report_logs_in_console = true;
-                self.use_console_color = true;
-            }
-        }
-
+        self.console = console_config;
         self
     }
 
@@ -73,6 +56,10 @@ impl WasmLayerConfig {
     pub fn set_show_fields(&mut self, show_fields: bool) -> &mut Self {
         self.show_fields = show_fields;
         self
+    }
+
+    pub fn console_enabled(&self) -> bool {
+        self.console.reporting_enabled()
     }
 }
 
@@ -84,8 +71,7 @@ fn test_default_built_config() {
         config,
         WasmLayerConfig {
             report_logs_in_timings: true,
-            report_logs_in_console: true,
-            use_console_color: true,
+            console: ConsoleConfig::ReportWithConsoleColor,
             max_level: tracing::Level::TRACE,
             show_fields: true,
         }
@@ -105,8 +91,7 @@ fn test_set_console_config_no_reporting() {
     let mut config = WasmLayerConfig::new();
     config.set_console_config(ConsoleConfig::NoReporting);
 
-    assert!(!config.report_logs_in_console);
-    assert!(!config.use_console_color);
+    assert!(!config.console.reporting_enabled());
 }
 
 #[test]
@@ -114,8 +99,7 @@ fn test_set_console_config_without_color() {
     let mut config = WasmLayerConfig::new();
     config.set_console_config(ConsoleConfig::ReportWithoutConsoleColor);
 
-    assert!(config.report_logs_in_console);
-    assert!(!config.use_console_color);
+    assert_eq!(config.console, ConsoleConfig::ReportWithoutConsoleColor);
 }
 
 #[test]
@@ -123,8 +107,7 @@ fn test_set_console_config_with_color() {
     let mut config = WasmLayerConfig::new();
     config.set_console_config(ConsoleConfig::ReportWithConsoleColor);
 
-    assert!(config.report_logs_in_console);
-    assert!(config.use_console_color);
+    assert_eq!(config.console, ConsoleConfig::ReportWithConsoleColor);
 }
 
 #[test]

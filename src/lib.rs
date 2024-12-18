@@ -45,7 +45,6 @@ pub mod prelude {
     pub use super::{
         config::{ConsoleConfig, WasmLayerConfig},
         layer::WasmLayer,
-        recorder::StringRecorder,
     };
 }
 

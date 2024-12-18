@@ -1,7 +1,5 @@
-#[doc = r#"
-Sets [WasmLayerConfig::report_logs_in_console](super::WasmLayerConfig::report_logs_in_console) and
-[WasmLayerConfig::use_console_color](super::WasmLayerConfig::use_console_color) together.
-"#]
+/// Determines how the web console should behave
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ConsoleConfig {
     /// Do not record to console
     NoReporting,
@@ -9,4 +7,10 @@ pub enum ConsoleConfig {
     ReportWithoutConsoleColor,
     /// Record to console with colorful text
     ReportWithConsoleColor,
+}
+
+impl ConsoleConfig {
+    pub fn reporting_enabled(&self) -> bool {
+        !matches!(self, ConsoleConfig::NoReporting)
+    }
 }
