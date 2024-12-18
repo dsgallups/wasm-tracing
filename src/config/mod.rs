@@ -2,7 +2,7 @@ use crate::ConsoleConfig;
 
 pub mod console;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct WASMLayerConfig {
     pub report_logs_in_timings: bool,
     pub report_logs_in_console: bool,

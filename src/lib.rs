@@ -1,3 +1,31 @@
+#![doc = r#"
+# `wasm-tracing`
+
+Leverages tracing to proilfe wasm performance via `console`.
+
+## Usage
+
+For the simplest out of the box set-up, you can simply set `wasm_tracing` as your default tracing Subscriber in wasm_bindgen(start)
+
+We have this declared in our `./src/lib.rs`
+
+```rust
+use console_error_panic_hook;
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen(start)]
+pub fn start() -> Result<(), JsValue> {
+    // print pretty errors in wasm https://github.com/rustwasm/console_error_panic_hook
+    // This is not needed for tracing_wasm to work, but it is a common tool for getting proper error line numbers for panics.
+    console_error_panic_hook::set_once();
+
+    wasm_tracing::set_as_global_default();
+
+    Ok(())
+}
+```
+"#]
+
 use tracing::dispatcher::SetGlobalDefaultError;
 use tracing_subscriber::layer::*;
 use tracing_subscriber::registry::*;
@@ -60,7 +88,7 @@ fn mark_name(id: &tracing::Id) -> String {
     )
 }
 
-/// Set the global default with [tracing::subscriber::set_global_default]
+/// Set the global default with [tracing::subscriber::set_global_default]. Panics if the [WASMLayer] cannot be constructed.
 pub fn set_as_global_default() {
     tracing::subscriber::set_global_default(
         Registry::default().with(WASMLayer::new(WASMLayerConfig::default())),
@@ -68,14 +96,53 @@ pub fn set_as_global_default() {
     .expect("default global");
 }
 
-/// Set the global default with [tracing::subscriber::set_global_default]
+#[doc = r#"
+# Set WASM to be the default subscriber with [tracing::subscriber::set_global_default].
+
+## Example
+
+```rust
+use console_error_panic_hook;
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen(start)]
+pub fn start() -> Result<(), JsValue> {
+    console_error_panic_hook::set_once();
+
+    wasm_tracing::try_set_as_global_default();
+
+    Ok(())
+}
+```
+"#]
 pub fn try_set_as_global_default() -> Result<(), SetGlobalDefaultError> {
     tracing::subscriber::set_global_default(
         Registry::default().with(WASMLayer::new(WASMLayerConfig::default())),
     )
 }
 
-/// Set the global default with [tracing::subscriber::set_global_default]
+#[doc = r#"
+# Given a [`WASMLayerConfig`], set WASM to be the default subscriber.
+
+## Example
+
+```rust
+use console_error_panic_hook;
+use wasm_bindgen::prelude::*;
+use wasm_tracing::prelude::*;
+
+#[wasm_bindgen(start)]
+pub fn start() -> Result<(), JsValue> {
+    console_error_panic_hook::set_once();
+
+    let config = WasmLayerConfig::new().set_report_logs_in_timings(true).set_max_level(Level::ERROR).to_owned();
+
+    wasm_tracing::set_as_global_default_with_config(config);
+
+    Ok(())
+}
+```
+"#]
 pub fn set_as_global_default_with_config(config: WASMLayerConfig) {
     tracing::subscriber::set_global_default(Registry::default().with(WASMLayer::new(config)))
         .expect("default global");
