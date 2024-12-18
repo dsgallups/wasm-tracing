@@ -105,10 +105,13 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
         if let ConsoleConfig::NoReporting = self.config.console {
             return;
         }
-        let origin = meta
-            .file()
-            .and_then(|file| meta.line().map(|ln| format!("{}:{}", file, ln)))
-            .unwrap_or_default();
+        let origin = if self.config.show_origin {
+            meta.file()
+                .and_then(|file| meta.line().map(|ln| format!("{}:{}", file, ln)))
+                .unwrap_or_default()
+        } else {
+            String::new()
+        };
 
         let fields = ctx
             .lookup_current()

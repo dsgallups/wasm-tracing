@@ -16,6 +16,8 @@ pub struct WasmLayerConfig {
     pub max_level: tracing::Level,
     /// Show/hide fields of types
     pub show_fields: bool,
+    /// Show origin (line number, source)
+    pub show_origin: bool,
 }
 
 impl Default for WasmLayerConfig {
@@ -25,6 +27,7 @@ impl Default for WasmLayerConfig {
             console: ConsoleConfig::ReportWithConsoleColor,
             max_level: tracing::Level::TRACE,
             show_fields: true,
+            show_origin: true,
         }
     }
 }
@@ -52,6 +55,11 @@ impl WasmLayerConfig {
         self
     }
 
+    pub fn set_show_origin(&mut self, show_origin: bool) -> &mut Self {
+        self.show_origin = show_origin;
+        self
+    }
+
     /// Set if events will show additional fields, usually the file or line.
     pub fn set_show_fields(&mut self, show_fields: bool) -> &mut Self {
         self.show_fields = show_fields;
@@ -74,6 +82,7 @@ fn test_default_built_config() {
             console: ConsoleConfig::ReportWithConsoleColor,
             max_level: tracing::Level::TRACE,
             show_fields: true,
+            show_origin: true
         }
     )
 }
