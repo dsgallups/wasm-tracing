@@ -32,17 +32,22 @@ use tracing_subscriber::registry::*;
 
 use wasm_bindgen::prelude::*;
 
-pub mod config;
-pub mod layer;
+#[doc(hidden)]
+mod config;
+pub use config::*;
+
+#[doc(hidden)]
+mod layer;
+pub use layer::*;
 pub(crate) mod recorder;
 
 pub mod prelude {
     pub use super::{
-        config::{console::ConsoleConfig, WasmLayerConfig},
+        config::{ConsoleConfig, WasmLayerConfig},
         layer::WasmLayer,
+        recorder::StringRecorder,
     };
 }
-use prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
@@ -88,7 +93,7 @@ fn mark_name(id: &tracing::Id) -> String {
     )
 }
 
-/// Set the global default with [tracing::subscriber::set_global_default]. Panics if the [WASMLayer] cannot be constructed.
+/// Set the global default recorder with [tracing::subscriber::set_global_default]. Panics if the [WasmLayer] cannot be constructed.
 pub fn set_as_global_default() {
     tracing::subscriber::set_global_default(
         Registry::default().with(WasmLayer::new(WasmLayerConfig::default())),
@@ -97,7 +102,7 @@ pub fn set_as_global_default() {
 }
 
 #[doc = r#"
-# Set WASM to be the default subscriber with [tracing::subscriber::set_global_default].
+Set WASM to be the default recorder with [tracing::subscriber::set_global_default].
 
 ## Example
 
@@ -122,7 +127,7 @@ pub fn try_set_as_global_default() -> Result<(), SetGlobalDefaultError> {
 }
 
 #[doc = r#"
-# Given a [`WASMLayerConfig`], set WASM to be the default subscriber.
+Given a [`WasmLayerConfig`], set WASM to be the default recorder.
 
 ## Example
 

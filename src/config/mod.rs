@@ -1,13 +1,22 @@
-use crate::ConsoleConfig;
+#[doc(hidden)]
+mod console;
+pub use console::*;
 
-pub mod console;
+#[deprecated(since = "1.0.0", note = "Rename WASMLayerConfig to WasmLayerConfig.")]
+pub type WASMLayerConfig = WasmLayerConfig;
 
+#[doc = r#"
+Configuration parameters for the [WasmLayer](crate::prelude::WasmLayer).
+"#]
 #[derive(Debug, PartialEq, Clone)]
 pub struct WasmLayerConfig {
     pub report_logs_in_timings: bool,
     pub report_logs_in_console: bool,
+    /// Colorful logs
     pub use_console_color: bool,
+    /// Maximum log level
     pub max_level: tracing::Level,
+    /// Show/hide fields of types
     pub show_fields: bool,
 }
 
