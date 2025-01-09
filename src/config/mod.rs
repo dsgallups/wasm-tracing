@@ -6,7 +6,7 @@ pub use console::*;
 pub type WASMLayerConfig = WasmLayerConfig;
 
 ///Configuration parameters for the [WasmLayer](crate::prelude::WasmLayer).
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct WasmLayerConfig {
     /// In dev-tools, report timings of traces
     pub report_logs_in_timings: bool,
@@ -18,6 +18,8 @@ pub struct WasmLayerConfig {
     pub show_fields: bool,
     /// Show origin (line number, source)
     pub show_origin: bool,
+    /// Optional URL to prepend to origins. E.g. to allow for showing full file paths that can be navigated when logged in the browser console.
+    pub origin_base_url: Option<String>,
 }
 
 impl Default for WasmLayerConfig {
@@ -28,6 +30,7 @@ impl Default for WasmLayerConfig {
             max_level: tracing::Level::TRACE,
             show_fields: true,
             show_origin: true,
+            origin_base_url: None,
         }
     }
 }
@@ -67,6 +70,12 @@ impl WasmLayerConfig {
         self
     }
 
+    /// Set the base URL for origins. This can be used to show full file paths in the browser console.
+    pub fn set_origin_base_url(&mut self, origin_base_url: impl ToString) -> &mut Self {
+        self.origin_base_url = Some(origin_base_url.to_string());
+        self
+    }
+
     /// True if the console reporting spans
     pub fn console_enabled(&self) -> bool {
         self.console.reporting_enabled()
@@ -84,7 +93,8 @@ fn test_default_built_config() {
             console: ConsoleConfig::ReportWithConsoleColor,
             max_level: tracing::Level::TRACE,
             show_fields: true,
-            show_origin: true
+            show_origin: true,
+            origin_base_url: None
         }
     )
 }
