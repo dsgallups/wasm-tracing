@@ -10,9 +10,6 @@ use crate::{
     thread_display_suffix,
 };
 
-#[deprecated(since = "1.0.0", note = "Rename WASMLayer to WasmLayer.")]
-pub type WASMLayer = WasmLayer;
-
 #[doc = r#"
 Implements [tracing_subscriber::layer::Layer] which uses [wasm_bindgen] for marking and measuring via `window.performance` and `window.console`
 

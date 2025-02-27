@@ -1,3 +1,21 @@
+# 2.0.0 (February 27, 2025)
+
+### Added
+- added `origin_base_url` to WasmLayerConfig (#15)
+    - A URL that's prepended to origins.
+    - Thanks @rksm!
+- notes: the addition of `origin_base_url` implies that `WasmLayerConfig` is no longer copy.
+
+### Removed
+- `WASMLayerConfig` and `WASMLayer` type aliases. Use `WasmLayerConfig` and `WasmLayer`, respectively.
+
+### Wants
+- Suggestions for well-formed `tracing` analogs that could better support that functionality in this crate.
+If there is a particular extension for tracing that you enjoy, or believe has a great interface (possibly like `rtt`),
+please let me know!
+
+
+
 # 1.0.1 (December 17, 2024)
 
 ### Added

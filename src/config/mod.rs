@@ -2,9 +2,6 @@
 mod console;
 pub use console::*;
 
-#[deprecated(since = "1.0.0", note = "Rename WASMLayerConfig to WasmLayerConfig.")]
-pub type WASMLayerConfig = WasmLayerConfig;
-
 ///Configuration parameters for the [WasmLayer](crate::prelude::WasmLayer).
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct WasmLayerConfig {

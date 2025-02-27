@@ -1,6 +1,6 @@
 [package]
 name = "wasm-tracing"
-version = "1.0.1"
+version = "2.0.0"
 authors = ["Daniel Gallups <dsgallups@protonmail.com>"]
 edition = "2021"
 categories = [
@@ -20,7 +20,7 @@ repository = "https://github.com/dsgallups/wasm-tracing"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-rayon = { version = "1.5", optional = true }
+rayon = { version = "1.10", optional = true }
 tracing = { version = "0.1", features = [
     "attributes",
 ], default-features = false }
