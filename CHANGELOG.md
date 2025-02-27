@@ -6,6 +6,9 @@
     - Thanks @rksm!
 - notes: the addition of `origin_base_url` implies that `WasmLayerConfig` is no longer copy.
 
+### Changed
+- `set_as_global_default_with_config` now returns a Result. This will fail if the global default is already set.
+
 ### Removed
 - `WASMLayerConfig` and `WASMLayer` type aliases. Use `WasmLayerConfig` and `WasmLayer`, respectively.
 
