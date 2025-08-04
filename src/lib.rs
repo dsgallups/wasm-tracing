@@ -74,7 +74,7 @@ fn thread_display_suffix() -> &'static str {
 fn thread_display_suffix() -> String {
     let mut message = " #".to_string();
     match rayon::current_thread_index() {
-        Some(idx) => message.push_str(&format!("{}", idx)),
+        Some(idx) => message.push_str(&format!("{idx}")),
         None => message.push_str("main"),
     }
     message
