@@ -1,3 +1,9 @@
+# 2.1.0 (Auguest 4, 2025)
+### Changes
+* chore: update README.md and CHANGELOG.md by @dsgallups in https://github.com/dsgallups/wasm-tracing/pull/18
+* chore: Update deps and lints by @dsgallups in https://github.com/dsgallups/wasm-tracing/pull/20
+* fix: remove crate-type in manifest by @dsgallups in https://github.com/dsgallups/wasm-tracing/pull/21
+
 # 2.0.0 (February 27, 2025)
 
 ### Added
