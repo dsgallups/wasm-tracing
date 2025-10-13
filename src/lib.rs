@@ -63,6 +63,18 @@ extern "C" {
     fn log3(message1: &str, message2: &str, message3: &str);
     #[wasm_bindgen(js_namespace = console, js_name = log)]
     fn log4(message1: String, message2: &str, message3: &str, message4: &str);
+    #[wasm_bindgen(js_namespace = console, js_name = debug)]
+    fn debug1(message: String);
+    #[wasm_bindgen(js_namespace = console, js_name = debug)]
+    fn debug4(message1: String, message2: &str, message3: &str, message4: &str);
+    #[wasm_bindgen(js_namespace = console, js_name = warn)]
+    fn warn1(message: String);
+    #[wasm_bindgen(js_namespace = console, js_name = warn)]
+    fn warn4(message1: String, message2: &str, message3: &str, message4: &str);
+    #[wasm_bindgen(js_namespace = console, js_name = error)]
+    fn error1(message: String);
+    #[wasm_bindgen(js_namespace = console, js_name = error)]
+    fn error4(message1: String, message2: &str, message3: &str, message4: &str);
 }
 
 #[cfg(not(feature = "mark-with-rayon-thread-index"))]
