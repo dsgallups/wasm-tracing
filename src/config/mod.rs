@@ -22,7 +22,7 @@ pub struct WasmLayerConfig {
     /// Enabling this value will emit traces to their corresponding
     /// console method.
     ///
-    /// This is disabled by default.
+    /// `false` by default.
     ///
     /// | Level | Console Method |
     /// | ----- | -------------- |

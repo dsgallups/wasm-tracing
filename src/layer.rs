@@ -152,7 +152,6 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                     })
             })
             .unwrap_or_default();
-
         if self.config.color {
             log_with_color(
                 format!(
@@ -164,6 +163,7 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                     fields
                 ),
                 level,
+                self.config.use_console_methods,
             );
         } else {
             log(
@@ -176,6 +176,7 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                     fields
                 ),
                 level,
+                self.config.use_console_methods,
             );
         }
     }
@@ -219,32 +220,50 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
     }
 }
 
-fn log(message: String, level: &Level) {
-    match *level {
-        Level::TRACE | Level::DEBUG => debug1(message),
-        Level::INFO => log1(message),
-        Level::WARN => warn1(message),
-        Level::ERROR => error1(message),
+fn log(message: String, level: &Level, use_console_methods: bool) {
+    if use_console_methods {
+        log1(message)
+    } else {
+        match *level {
+            Level::TRACE | Level::DEBUG => debug1(message),
+            Level::INFO => log1(message),
+            Level::WARN => warn1(message),
+            Level::ERROR => error1(message),
+        }
     }
 }
 
-fn log_with_color(message: String, level: &Level) {
-    let level_log = match *level {
-        Level::TRACE | Level::DEBUG => debug4,
-        Level::INFO => log4,
-        Level::WARN => warn4,
-        Level::ERROR => error4,
+fn log_with_color(message: String, level: &Level, use_console_methods: bool) {
+    let level_log = if use_console_methods {
+        log4
+    } else {
+        match *level {
+            Level::TRACE | Level::DEBUG => debug4,
+            Level::INFO => log4,
+            Level::WARN => warn4,
+            Level::ERROR => error4,
+        }
     };
     level_log(
         message,
-        match *level {
+        level.color(),
+        "color: gray; font-style: italic",
+        "color: inherit",
+    );
+}
+
+trait LevelExt {
+    fn color(&self) -> &'static str;
+}
+
+impl LevelExt for Level {
+    fn color(&self) -> &'static str {
+        match *self {
             Level::TRACE => "color: dodgerblue; background: #444",
             Level::DEBUG => "color: lawngreen; background: #444",
             Level::INFO => "color: whitesmoke; background: #444",
             Level::WARN => "color: orange; background: #444",
             Level::ERROR => "color: red; background: #444",
-        },
-        "color: gray; font-style: italic",
-        "color: inherit",
-    );
+        }
+    }
 }

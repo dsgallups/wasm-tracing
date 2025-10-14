@@ -58,10 +58,6 @@ extern "C" {
     #[wasm_bindgen(js_namespace = console, js_name = log)]
     fn log1(message: String);
     #[wasm_bindgen(js_namespace = console, js_name = log)]
-    fn log2(message1: &str, message2: &str);
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
-    fn log3(message1: &str, message2: &str, message3: &str);
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
     fn log4(message1: String, message2: &str, message3: &str, message4: &str);
     #[wasm_bindgen(js_namespace = console, js_name = debug)]
     fn debug1(message: String);
@@ -106,9 +102,22 @@ fn mark_name(id: &tracing::Id) -> String {
 }
 
 #[doc = r#"
-    Set the global default recorder with [tracing::subscriber::set_global_default]. Panics if the [WasmLayer] cannot be constructed.
+Set the global default recorder with [tracing::subscriber::set_global_default]. Panics if the [WasmLayer] cannot be constructed.
 
-    Panics if a global default is already set.
+Panics if a global default is already set.
+
+## NOTE
+
+It is discouraged by `tracing` for libraries (such at this one) to call [`tracing::subscriber::set_global_default`].
+This function does so, as it is a convenience. If you are a library, please follow the advice of `tracing`.
+
+If you would like to use multiple layers, use this code:
+```rust
+use tracing_subscriber::layer::*;
+use tracing_subscriber::registry::*;
+use wasm_tracing::prelude::*;
+
+tracing::subscriber::set_global_default(Registry::default().with(WasmLayer::new(config)))
 "#]
 pub fn set_as_global_default() {
     tracing::subscriber::set_global_default(
@@ -136,6 +145,19 @@ pub fn start() -> Result<(), JsValue> {
     Ok(())
 }
 ```
+
+## NOTE
+
+It is discouraged by `tracing` for libraries (such at this one) to call [`tracing::subscriber::set_global_default`].
+This function does so, as it is a convenience. If you are a library, please follow the advice of `tracing`.
+
+If you would like to use multiple layers, use this code:
+```rust
+use tracing_subscriber::layer::*;
+use tracing_subscriber::registry::*;
+use wasm_tracing::prelude::*;
+
+tracing::subscriber::set_global_default(Registry::default().with(WasmLayer::new(config)))
 "#]
 pub fn try_set_as_global_default() -> Result<(), SetGlobalDefaultError> {
     tracing::subscriber::set_global_default(
@@ -145,6 +167,7 @@ pub fn try_set_as_global_default() -> Result<(), SetGlobalDefaultError> {
 
 #[doc = r#"
 Given a [`WasmLayerConfig`], set WASM to be the default layer for a [Registry].
+
 
 ## Example
 
@@ -158,12 +181,26 @@ use tracing::Level;
 pub fn start() -> Result<(), JsValue> {
     console_error_panic_hook::set_once();
 
-    let config = WasmLayerConfig::new().set_report_logs_in_timings(true).set_max_level(Level::ERROR).to_owned();
+    let config = WasmLayerConfig::new().remove_timings().with_max_level(Level::ERROR);
 
     let _ = wasm_tracing::set_as_global_default_with_config(config);
 
     Ok(())
 }
+```
+
+## NOTE
+
+It is discouraged by `tracing` for libraries (such at this one) to call [`tracing::subscriber::set_global_default`].
+This function does so, as it is a convenience. If you are a library, please follow the advice of `tracing`.
+
+If you would like to use multiple layers, use this code:
+```rust
+use tracing_subscriber::layer::*;
+use tracing_subscriber::registry::*;
+use wasm_tracing::prelude::*;
+
+tracing::subscriber::set_global_default(Registry::default().with(WasmLayer::new(config)))
 ```
 "#]
 pub fn set_as_global_default_with_config(

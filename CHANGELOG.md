@@ -9,7 +9,7 @@
 | --------- | ---- |
 | `ConsoleConfig::NoReporting` | `WasmLayerConfig { enabled: false, ..Default::default() }` |
 | `ConsoleConfig::ReportWithoutConsoleColor` | `WasmLayerConfig { color: false, ..Default::default() }` |
-| `ConsoleConfig::ReportWithConsoleColor` | `WasmLayerConfig::default()` |
+| `ConsoleConfig::ReportWithConsoleColor` | `WasmLayerConfig::new()` |
 
 ### Contributions
 - @jtfmumm for #25!
