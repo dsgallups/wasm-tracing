@@ -2,7 +2,7 @@
 #![doc = r#"
 # `wasm-tracing`
 
-Leverages tracing to proilfe wasm performance via `console`.
+Leverages tracing to profile wasm performance via `console`.
 
 ## Usage
 

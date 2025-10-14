@@ -32,7 +32,6 @@ let subscriber = MySubscriber::new()
 
 tracing::subscriber::set_global_default(subscriber);
 ```
-
 "#]
 pub struct WasmLayer {
     last_event_id: AtomicUsize,
