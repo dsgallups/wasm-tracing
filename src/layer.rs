@@ -7,7 +7,7 @@ use tracing_subscriber::{layer::Context, registry::LookupSpan, Layer};
 
 use crate::{
     debug1, debug4, error1, error4, log1, log4, mark, mark_name, measure, prelude::*,
-    recorder::StringRecorder, thread_display_suffix, warn1, warn4,
+    recorder::StringRecorder, thread_display_suffix, warn1, warn4, ReportingText,
 };
 
 #[doc = r#"
@@ -119,9 +119,9 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                 mark_name,
             );
         }
-        if let ConsoleConfig::NoReporting = self.config.console {
+        let Some(reporting_text) = self.config.console.reporting() else {
             return;
-        }
+        };
         let origin = if self.config.show_origin {
             meta.file()
                 .and_then(|file| {
@@ -155,8 +155,8 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
             })
             .unwrap_or_default();
 
-        match self.config.console {
-            ConsoleConfig::ReportWithConsoleColor => log_with_color(
+        match reporting_text {
+            ReportingText::Colorful => log_with_color(
                 format!(
                     "%c{}%c {}{}%c{}{}",
                     level,
@@ -167,7 +167,7 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                 ),
                 level,
             ),
-            ConsoleConfig::ReportWithoutConsoleColor => log(
+            ReportingText::Colorless => log(
                 format!(
                     "{} {}{} {}{}",
                     level,
@@ -178,7 +178,6 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                 ),
                 level,
             ),
-            ConsoleConfig::NoReporting => unreachable!(),
         };
     }
 

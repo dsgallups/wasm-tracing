@@ -23,7 +23,7 @@ impl Default for WasmLayerConfig {
     fn default() -> Self {
         WasmLayerConfig {
             report_logs_in_timings: true,
-            console: ConsoleConfig::ReportWithConsoleColor,
+            console: ConsoleConfig::report_with_console_color(),
             max_level: tracing::Level::TRACE,
             show_fields: true,
             show_origin: true,
@@ -87,7 +87,7 @@ fn test_default_built_config() {
         config,
         WasmLayerConfig {
             report_logs_in_timings: true,
-            console: ConsoleConfig::ReportWithConsoleColor,
+            console: ConsoleConfig::report_with_console_color(),
             max_level: tracing::Level::TRACE,
             show_fields: true,
             show_origin: true,
@@ -107,7 +107,7 @@ fn test_set_report_logs_in_timings() {
 #[test]
 fn test_set_console_config_no_reporting() {
     let mut config = WasmLayerConfig::new();
-    config.set_console_config(ConsoleConfig::NoReporting);
+    config.set_console_config(ConsoleConfig::no_reporting());
 
     assert!(!config.console.reporting_enabled());
 }
@@ -115,17 +115,19 @@ fn test_set_console_config_no_reporting() {
 #[test]
 fn test_set_console_config_without_color() {
     let mut config = WasmLayerConfig::new();
-    config.set_console_config(ConsoleConfig::ReportWithoutConsoleColor);
+    config.set_console_config(ConsoleConfig::report_without_console_color());
 
-    assert_eq!(config.console, ConsoleConfig::ReportWithoutConsoleColor);
+    assert!(config.console.reporting_enabled());
+    assert_eq!(config.console.reporting(), Some(ReportingText::Colorless));
 }
 
 #[test]
 fn test_set_console_config_with_color() {
     let mut config = WasmLayerConfig::new();
-    config.set_console_config(ConsoleConfig::ReportWithConsoleColor);
+    config.set_console_config(ConsoleConfig::report_with_console_color());
 
-    assert_eq!(config.console, ConsoleConfig::ReportWithConsoleColor);
+    assert!(config.console.reporting_enabled());
+    assert_eq!(config.console.reporting(), Some(ReportingText::Colorful));
 }
 
 #[test]
