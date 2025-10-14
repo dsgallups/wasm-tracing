@@ -121,7 +121,7 @@ use tracing_subscriber::layer::*;
 use tracing_subscriber::registry::*;
 use wasm_tracing::prelude::*;
 
-tracing::subscriber::set_global_default(Registry::default().with(WasmLayer::new(config)))
+tracing::subscriber::set_global_default(Registry::default().with(WasmLayer::default())).unwrap();
 "#]
 pub fn set_as_global_default() {
     tracing::subscriber::set_global_default(
@@ -161,7 +161,7 @@ use tracing_subscriber::layer::*;
 use tracing_subscriber::registry::*;
 use wasm_tracing::prelude::*;
 
-tracing::subscriber::set_global_default(Registry::default().with(WasmLayer::new(config)))
+tracing::subscriber::set_global_default(Registry::default().with(WasmLayer::default())).unwrap();
 "#]
 pub fn try_set_as_global_default() -> Result<(), SetGlobalDefaultError> {
     tracing::subscriber::set_global_default(
@@ -204,7 +204,7 @@ use tracing_subscriber::layer::*;
 use tracing_subscriber::registry::*;
 use wasm_tracing::prelude::*;
 
-tracing::subscriber::set_global_default(Registry::default().with(WasmLayer::new(config)))
+tracing::subscriber::set_global_default(Registry::default().with(WasmLayer::default())).unwrap();
 ```
 "#]
 pub fn set_as_global_default_with_config(
