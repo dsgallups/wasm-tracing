@@ -1,4 +1,4 @@
-use tracing::{event, span, Level};
+use tracing::{event, info, span, Level};
 use wasm_bindgen_test::*;
 use wasm_tracing::WasmLayerConfig;
 
@@ -14,13 +14,19 @@ pub fn simple_test() {
     wasm_tracing::set_as_global_default_with_config(config).unwrap();
 
     throw_events();
+    foo();
 }
 
-pub fn throw_events() {
+fn throw_events() {
     event!(Level::INFO, "Foobar");
     event!(Level::WARN, "Warn log");
     let span = span!(Level::INFO, "Test span");
     let _guard = span.enter();
     event!(Level::DEBUG, "Inside span");
     event!(Level::ERROR, "Error log");
+}
+
+#[tracing::instrument(name = "my_foo_function")]
+fn foo() {
+    info!("In FOO")
 }

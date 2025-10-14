@@ -66,14 +66,17 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
         id: &tracing::Id,
         ctx: Context<'_, S>,
     ) {
+        let span_ref = ctx.span(id).expect("Span not found, this is a bug");
         let mut new_debug_record = StringRecorder::new(self.config.show_fields);
         attrs.record(&mut new_debug_record);
 
-        if let Some(span_ref) = ctx.span(id) {
-            span_ref
-                .extensions_mut()
-                .insert::<StringRecorder>(new_debug_record);
+        let mut extensions = span_ref.extensions_mut();
+
+        if extensions.get_mut::<StringRecorder>().is_none() {
+            extensions.insert::<StringRecorder>(new_debug_record);
         }
+
+        if self.config.report_logs_in_timings {}
     }
 
     fn on_record(&self, id: &tracing::Id, values: &tracing::span::Record<'_>, ctx: Context<'_, S>) {
