@@ -21,6 +21,7 @@ repository = "https://github.com/dsgallups/wasm-tracing"
 mark-with-rayon-thread-index = ["rayon"]
 
 [dependencies]
+bevy_platform = {version = "0.17.2", default-features = false, features = ["web"] }
 rayon = { version = "1.10", optional = true }
 tracing = { version = "0.1", features = [
     "attributes",
@@ -28,6 +29,7 @@ tracing = { version = "0.1", features = [
 tracing-log = { version = "0.2", default-features = false, optional = true }
 tracing-subscriber = { version = "0.3", features = [
     "registry",
+    "fmt"
 ], default-features = false }
 wasm-bindgen = { version = "0.2" }
 

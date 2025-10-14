@@ -44,6 +44,8 @@ use wasm_bindgen::prelude::*;
 mod config;
 pub use config::*;
 
+mod timings;
+
 #[doc(hidden)]
 mod layer;
 pub use layer::*;
@@ -167,6 +169,10 @@ pub fn try_set_as_global_default() -> Result<(), SetGlobalDefaultError> {
     tracing::subscriber::set_global_default(
         Registry::default().with(WasmLayer::new(WasmLayerConfig::default())),
     )
+}
+
+fn foobasiojdoa() {
+    tracing_subscriber::fmt().init();
 }
 
 #[doc = r#"
