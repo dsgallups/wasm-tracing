@@ -1,7 +1,3 @@
-#[doc(hidden)]
-mod console;
-pub use console::*;
-
 ///Configuration parameters for the [WasmLayer](crate::prelude::WasmLayer).
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct WasmLayerConfig {

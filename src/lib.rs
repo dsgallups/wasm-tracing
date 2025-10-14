@@ -43,10 +43,7 @@ pub use layer::*;
 pub(crate) mod recorder;
 /// Re-exports of common types
 pub mod prelude {
-    pub use super::{
-        config::{ConsoleConfig, WasmLayerConfig},
-        layer::WasmLayer,
-    };
+    pub use super::{config::WasmLayerConfig, layer::WasmLayer};
 }
 
 #[wasm_bindgen]
