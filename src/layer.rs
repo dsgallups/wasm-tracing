@@ -32,7 +32,6 @@ let subscriber = MySubscriber::new()
 
 tracing::subscriber::set_global_default(subscriber);
 ```
-
 "#]
 pub struct WasmLayer {
     last_event_id: AtomicUsize,
@@ -86,7 +85,7 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
     }
 
     fn on_event(&self, event: &tracing::Event<'_>, ctx: Context<'_, S>) {
-        if !self.config.report_logs_in_timings && !self.config.console.reporting_enabled() {
+        if !self.config.enabled {
             return;
         }
 
@@ -119,9 +118,7 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                 mark_name,
             );
         }
-        if let ConsoleConfig::NoReporting = self.config.console {
-            return;
-        }
+
         let origin = if self.config.show_origin {
             meta.file()
                 .and_then(|file| {
@@ -154,9 +151,8 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                     })
             })
             .unwrap_or_default();
-
-        match self.config.console {
-            ConsoleConfig::ReportWithConsoleColor => log_with_color(
+        if self.config.color {
+            log_with_color(
                 format!(
                     "%c{}%c {}{}%c{}{}",
                     level,
@@ -166,8 +162,10 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                     fields
                 ),
                 level,
-            ),
-            ConsoleConfig::ReportWithoutConsoleColor => log(
+                self.config.use_console_methods,
+            );
+        } else {
+            log(
                 format!(
                     "{} {}{} {}{}",
                     level,
@@ -177,9 +175,9 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                     fields
                 ),
                 level,
-            ),
-            ConsoleConfig::NoReporting => unreachable!(),
-        };
+                self.config.use_console_methods,
+            );
+        }
     }
 
     fn on_enter(&self, id: &tracing::Id, _ctx: Context<'_, S>) {
@@ -221,32 +219,50 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
     }
 }
 
-fn log(message: String, level: &Level) {
-    match *level {
-        Level::TRACE | Level::DEBUG => debug1(message),
-        Level::INFO => log1(message),
-        Level::WARN => warn1(message),
-        Level::ERROR => error1(message),
+fn log(message: String, level: &Level, use_console_methods: bool) {
+    if use_console_methods {
+        match *level {
+            Level::TRACE | Level::DEBUG => debug1(message),
+            Level::INFO => log1(message),
+            Level::WARN => warn1(message),
+            Level::ERROR => error1(message),
+        }
+    } else {
+        log1(message)
     }
 }
 
-fn log_with_color(message: String, level: &Level) {
-    let level_log = match *level {
-        Level::TRACE | Level::DEBUG => debug4,
-        Level::INFO => log4,
-        Level::WARN => warn4,
-        Level::ERROR => error4,
+fn log_with_color(message: String, level: &Level, use_console_methods: bool) {
+    let level_log = if use_console_methods {
+        match *level {
+            Level::TRACE | Level::DEBUG => debug4,
+            Level::INFO => log4,
+            Level::WARN => warn4,
+            Level::ERROR => error4,
+        }
+    } else {
+        log4
     };
     level_log(
         message,
-        match *level {
+        level.color(),
+        "color: gray; font-style: italic",
+        "color: inherit",
+    );
+}
+
+trait LevelExt {
+    fn color(&self) -> &'static str;
+}
+
+impl LevelExt for Level {
+    fn color(&self) -> &'static str {
+        match *self {
             Level::TRACE => "color: dodgerblue; background: #444",
             Level::DEBUG => "color: lawngreen; background: #444",
             Level::INFO => "color: whitesmoke; background: #444",
             Level::WARN => "color: orange; background: #444",
             Level::ERROR => "color: red; background: #444",
-        },
-        "color: gray; font-style: italic",
-        "color: inherit",
-    );
+        }
+    }
 }

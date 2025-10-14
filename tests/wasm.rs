@@ -8,10 +8,9 @@ wasm_bindgen_test_configure!(run_in_browser);
 pub fn simple_test() {
     console_error_panic_hook::set_once();
     let config = WasmLayerConfig::new()
-        .set_max_level(Level::DEBUG)
-        .set_show_origin(false)
-        .set_show_fields(false)
-        .to_owned();
+        .with_max_level(Level::DEBUG)
+        .remove_origin()
+        .remove_fields();
     wasm_tracing::set_as_global_default_with_config(config).unwrap();
 
     throw_events();

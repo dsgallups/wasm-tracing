@@ -1,3 +1,21 @@
+# UNRELEASED
+### Added
+- Users now have the ability to use browser console methods (#25) that align with logging levels. i.e. `Level::WARN` logs will be emitted by `console.warn`. This value can be set via `WasmLayerConfig { use_console_methods }`.
+
+### Changes
+- `ConsoleConfig` has been removed. Behavior from the previous enumerations are available via the following field settings:
+
+| Previous | New |
+| --------- | ---- |
+| `ConsoleConfig::NoReporting` | `WasmLayerConfig { enabled: false, ..Default::default() }` |
+| `ConsoleConfig::ReportWithoutConsoleColor` | `WasmLayerConfig { color: false, ..Default::default() }` |
+| `ConsoleConfig::ReportWithConsoleColor` | `WasmLayerConfig::new()` |
+
+### Contributions
+- @jtfmumm for #25!
+
+
+
 # 2.1.0 (Auguest 4, 2025)
 ### Changes
 * chore: update README.md and CHANGELOG.md by @dsgallups in https://github.com/dsgallups/wasm-tracing/pull/18
