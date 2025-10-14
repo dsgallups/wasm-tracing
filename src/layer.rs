@@ -1,13 +1,13 @@
 use std::sync::atomic::AtomicUsize;
 
-use tracing::Subscriber;
+use tracing::{Level, Subscriber};
 #[cfg(feature = "tracing-log")]
 use tracing_log::NormalizeEvent as _;
 use tracing_subscriber::{layer::Context, registry::LookupSpan, Layer};
 
 use crate::{
-    log1, log4, mark, mark_name, measure, prelude::*, recorder::StringRecorder,
-    thread_display_suffix,
+    debug1, debug4, error1, error4, log1, log4, mark, mark_name, measure, prelude::*,
+    recorder::StringRecorder, thread_display_suffix, warn1, warn4,
 };
 
 #[doc = r#"
@@ -156,7 +156,7 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
             .unwrap_or_default();
 
         match self.config.console {
-            ConsoleConfig::ReportWithConsoleColor => log4(
+            ConsoleConfig::ReportWithConsoleColor => log_with_color(
                 format!(
                     "%c{}%c {}{}%c{}{}",
                     level,
@@ -165,24 +165,19 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                     recorder,
                     fields
                 ),
-                match *level {
-                    tracing::Level::TRACE => "color: dodgerblue; background: #444",
-                    tracing::Level::DEBUG => "color: lawngreen; background: #444",
-                    tracing::Level::INFO => "color: whitesmoke; background: #444",
-                    tracing::Level::WARN => "color: orange; background: #444",
-                    tracing::Level::ERROR => "color: red; background: #444",
-                },
-                "color: gray; font-style: italic",
-                "color: inherit",
-            ),
-            ConsoleConfig::ReportWithoutConsoleColor => log1(format!(
-                "{} {}{} {}{}",
                 level,
-                origin,
-                thread_display_suffix(),
-                recorder,
-                fields
-            )),
+            ),
+            ConsoleConfig::ReportWithoutConsoleColor => log(
+                format!(
+                    "{} {}{} {}{}",
+                    level,
+                    origin,
+                    thread_display_suffix(),
+                    recorder,
+                    fields
+                ),
+                level,
+            ),
             ConsoleConfig::NoReporting => unreachable!(),
         };
     }
@@ -224,4 +219,34 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
             }
         }
     }
+}
+
+fn log(message: String, level: &Level) {
+    match *level {
+        Level::TRACE | Level::DEBUG => debug1(message),
+        Level::INFO => log1(message),
+        Level::WARN => warn1(message),
+        Level::ERROR => error1(message),
+    }
+}
+
+fn log_with_color(message: String, level: &Level) {
+    let level_log = match *level {
+        Level::TRACE | Level::DEBUG => debug4,
+        Level::INFO => log4,
+        Level::WARN => warn4,
+        Level::ERROR => error4,
+    };
+    level_log(
+        message,
+        match *level {
+            Level::TRACE => "color: dodgerblue; background: #444",
+            Level::DEBUG => "color: lawngreen; background: #444",
+            Level::INFO => "color: whitesmoke; background: #444",
+            Level::WARN => "color: orange; background: #444",
+            Level::ERROR => "color: red; background: #444",
+        },
+        "color: gray; font-style: italic",
+        "color: inherit",
+    );
 }
