@@ -221,27 +221,27 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
 
 fn log(message: String, level: &Level, use_console_methods: bool) {
     if use_console_methods {
-        log1(message)
-    } else {
         match *level {
             Level::TRACE | Level::DEBUG => debug1(message),
             Level::INFO => log1(message),
             Level::WARN => warn1(message),
             Level::ERROR => error1(message),
         }
+    } else {
+        log1(message)
     }
 }
 
 fn log_with_color(message: String, level: &Level, use_console_methods: bool) {
     let level_log = if use_console_methods {
-        log4
-    } else {
         match *level {
             Level::TRACE | Level::DEBUG => debug4,
             Level::INFO => log4,
             Level::WARN => warn4,
             Level::ERROR => error4,
         }
+    } else {
+        log4
     };
     level_log(
         message,
