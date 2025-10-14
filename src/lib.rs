@@ -25,6 +25,13 @@ pub fn start() -> Result<(), JsValue> {
     Ok(())
 }
 ```
+
+## Features
+
+| Feature | Function |
+| ------------ | -------- |
+| `rayon` | Logs the rayon worker thread's index within its current pool. |
+| `tracing-log` | Provides complete Metadata via tracing-log's [`NormalizeEvent::normalized_metadata`](tracing_log::NormalizeEvent) method. |
 "#]
 
 use tracing::dispatcher::SetGlobalDefaultError;
