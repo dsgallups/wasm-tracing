@@ -5,10 +5,32 @@ pub use console::*;
 ///Configuration parameters for the [WasmLayer](crate::prelude::WasmLayer).
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct WasmLayerConfig {
-    /// In dev-tools, report timings of traces
+    /// determines if any reporting should occur.
+    ///
+    /// `true` by default.
+    pub enabled: bool,
+    /// In dev-tools, report timings of traces.
+    ///
+    /// `true` by default.
     pub report_logs_in_timings: bool,
-    /// See [ConsoleConfig]
-    pub console: ConsoleConfig,
+
+    /// emits the traces in either colorful or colorless fashion.
+    ///
+    /// `true` by default.
+    pub color: bool,
+
+    /// Enabling this value will emit traces to their corresponding
+    /// console method.
+    ///
+    /// This is disabled by default.
+    ///
+    /// | Level | Console Method |
+    /// | ----- | -------------- |
+    /// | `TRACE` | `console.debug` |
+    /// | `DEBUG` | `console.debug` |
+    /// | `INFO` | `console.log` |
+    /// | `WARN` | `console.warn` |
+    pub use_console_methods: bool,
     /// Maximum log level
     pub max_level: tracing::Level,
     /// Show/hide fields of types
@@ -22,8 +44,10 @@ pub struct WasmLayerConfig {
 impl Default for WasmLayerConfig {
     fn default() -> Self {
         WasmLayerConfig {
+            enabled: true,
             report_logs_in_timings: true,
-            console: ConsoleConfig::report_with_console_color(),
+            use_console_methods: false,
+            color: true,
             max_level: tracing::Level::TRACE,
             show_fields: true,
             show_origin: true,
@@ -38,44 +62,45 @@ impl WasmLayerConfig {
         WasmLayerConfig::default()
     }
 
-    /// Set whether events should appear in performance Timings
-    pub fn set_report_logs_in_timings(&mut self, report_logs_in_timings: bool) -> &mut Self {
-        self.report_logs_in_timings = report_logs_in_timings;
+    pub fn disable(mut self) -> Self {
+        self.enabled = false;
+        self
+    }
+
+    /// Disables events from appearing in performance timings
+    pub fn remove_timings(mut self) -> Self {
+        self.report_logs_in_timings = false;
+        self
+    }
+
+    /// Removes color from the logs
+    pub fn with_colorless_logs(mut self) -> Self {
+        self.color = false;
         self
     }
 
     /// Set the maximal level on which events should be displayed
-    pub fn set_max_level(&mut self, max_level: tracing::Level) -> &mut Self {
+    pub fn with_max_level(mut self, max_level: tracing::Level) -> Self {
         self.max_level = max_level;
         self
     }
 
-    /// Set if and how events should be displayed in the browser console
-    pub fn set_console_config(&mut self, console_config: ConsoleConfig) -> &mut Self {
-        self.console = console_config;
+    /// Removes the line number and source from the logs
+    pub fn remove_origin(mut self) -> Self {
+        self.show_origin = false;
         self
     }
 
-    pub fn set_show_origin(&mut self, show_origin: bool) -> &mut Self {
-        self.show_origin = show_origin;
-        self
-    }
-
-    /// Set if events will show additional fields, usually the file or line.
-    pub fn set_show_fields(&mut self, show_fields: bool) -> &mut Self {
-        self.show_fields = show_fields;
+    /// Removes the fields of types from the logs
+    pub fn remove_fields(mut self) -> Self {
+        self.show_fields = false;
         self
     }
 
     /// Set the base URL for origins. This can be used to show full file paths in the browser console.
-    pub fn set_origin_base_url(&mut self, origin_base_url: impl ToString) -> &mut Self {
+    pub fn with_origin_base_url(mut self, origin_base_url: impl ToString) -> Self {
         self.origin_base_url = Some(origin_base_url.to_string());
         self
-    }
-
-    /// True if the console reporting spans
-    pub fn console_enabled(&self) -> bool {
-        self.console.reporting_enabled()
     }
 }
 
@@ -86,8 +111,10 @@ fn test_default_built_config() {
     assert_eq!(
         config,
         WasmLayerConfig {
+            enabled: true,
             report_logs_in_timings: true,
-            console: ConsoleConfig::report_with_console_color(),
+            color: true,
+            use_console_methods: false,
             max_level: tracing::Level::TRACE,
             show_fields: true,
             show_origin: true,
@@ -98,42 +125,27 @@ fn test_default_built_config() {
 
 #[test]
 fn test_set_report_logs_in_timings() {
-    let mut config = WasmLayerConfig::new();
-    config.set_report_logs_in_timings(false);
+    let config = WasmLayerConfig::new().remove_timings();
 
     assert!(!config.report_logs_in_timings);
 }
 
 #[test]
 fn test_set_console_config_no_reporting() {
-    let mut config = WasmLayerConfig::new();
-    config.set_console_config(ConsoleConfig::no_reporting());
+    let config = WasmLayerConfig::new().disable();
 
-    assert!(!config.console.reporting_enabled());
+    assert!(!config.enabled);
 }
 
 #[test]
 fn test_set_console_config_without_color() {
-    let mut config = WasmLayerConfig::new();
-    config.set_console_config(ConsoleConfig::report_without_console_color());
-
-    assert!(config.console.reporting_enabled());
-    assert_eq!(config.console.reporting(), Some(ReportingText::Colorless));
-}
-
-#[test]
-fn test_set_console_config_with_color() {
-    let mut config = WasmLayerConfig::new();
-    config.set_console_config(ConsoleConfig::report_with_console_color());
-
-    assert!(config.console.reporting_enabled());
-    assert_eq!(config.console.reporting(), Some(ReportingText::Colorful));
+    let config = WasmLayerConfig::new().with_colorless_logs();
+    assert!(!config.color);
 }
 
 #[test]
 fn test_set_config_log_level_warn() {
-    let mut config = WasmLayerConfig::new();
-    config.set_max_level(tracing::Level::WARN);
+    let config = WasmLayerConfig::new().with_max_level(tracing::Level::WARN);
 
     assert_eq!(config.max_level, tracing::Level::WARN);
 }

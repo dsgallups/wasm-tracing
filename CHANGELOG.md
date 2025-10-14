@@ -1,19 +1,15 @@
 # UNRELEASED
 ### Added
-- Users now have the ability to use browser console methods (#25) that align with logging levels. i.e. `Level::WARN` logs will be emitted by `console.warn`. This value can be set via `ConsoleConfig { use_console_log_levels }`.
+- Users now have the ability to use browser console methods (#25) that align with logging levels. i.e. `Level::WARN` logs will be emitted by `console.warn`. This value can be set via `WasmLayerConfig { use_console_methods }`.
 
 ### Changes
-- `ConsoleConfig` is now a struct. Behavior from the previous enumerations are available via the following:
+- `ConsoleConfig` has been removed. Behavior from the previous enumerations are available via the following field settings:
 
 | Previous | New |
 | --------- | ---- |
-| `ConsoleConfig::NoReporting` | `ConsoleConfig::no_reporting()` |
-| `ConsoleConfig::ReportWithoutConsoleColor` | `ConsoleConfig::report_without_console_color()` |
-| `ConsoleConfig::ReportWithConsoleColor` | `ConsoleConfig::report_with_console_color` |
-
-- `ConsoleConfig` now has an interior `Option<ReportingText>` used to identify how the text should be displayed
-in the console.
-
+| `ConsoleConfig::NoReporting` | `WasmLayerConfig { enabled: false, ..Default::default() }` |
+| `ConsoleConfig::ReportWithoutConsoleColor` | `WasmLayerConfig { color: false, ..Default::default() }` |
+| `ConsoleConfig::ReportWithConsoleColor` | `WasmLayerConfig::default()` |
 
 ### Contributions
 - @jtfmumm for #25!

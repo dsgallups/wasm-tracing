@@ -7,7 +7,7 @@ use tracing_subscriber::{layer::Context, registry::LookupSpan, Layer};
 
 use crate::{
     debug1, debug4, error1, error4, log1, log4, mark, mark_name, measure, prelude::*,
-    recorder::StringRecorder, thread_display_suffix, warn1, warn4, ReportingText,
+    recorder::StringRecorder, thread_display_suffix, warn1, warn4,
 };
 
 #[doc = r#"
@@ -86,7 +86,7 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
     }
 
     fn on_event(&self, event: &tracing::Event<'_>, ctx: Context<'_, S>) {
-        if !self.config.report_logs_in_timings && !self.config.console.reporting_enabled() {
+        if !self.config.enabled {
             return;
         }
 
@@ -119,9 +119,7 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                 mark_name,
             );
         }
-        let Some(reporting_text) = self.config.console.reporting() else {
-            return;
-        };
+
         let origin = if self.config.show_origin {
             meta.file()
                 .and_then(|file| {
@@ -155,8 +153,8 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
             })
             .unwrap_or_default();
 
-        match reporting_text {
-            ReportingText::Colorful => log_with_color(
+        if self.config.color {
+            log_with_color(
                 format!(
                     "%c{}%c {}{}%c{}{}",
                     level,
@@ -166,8 +164,9 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                     fields
                 ),
                 level,
-            ),
-            ReportingText::Colorless => log(
+            );
+        } else {
+            log(
                 format!(
                     "{} {}{} {}{}",
                     level,
@@ -177,8 +176,8 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WasmLayer {
                     fields
                 ),
                 level,
-            ),
-        };
+            );
+        }
     }
 
     fn on_enter(&self, id: &tracing::Id, _ctx: Context<'_, S>) {

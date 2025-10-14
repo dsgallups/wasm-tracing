@@ -1,4 +1,23 @@
-/// Determines how the web console should behave
+/// Configurations determining how the web console should behave.
+///
+/// ### `reporting`
+///
+/// If this value is `None`, no logging will occur.
+/// See [`ReportingText`] for more information.
+///
+/// ### `use_console_log_levels`
+///
+/// Enabling this value will emit traces to their corresponding
+/// console method.
+///
+/// This is disabled by default.
+///
+/// | Level | Console Method |
+/// | ----- | -------------- |
+/// | `TRACE` | `console.debug` |
+/// | `DEBUG` | `console.debug` |
+/// | `INFO` | `console.log` |
+/// | `WARN` | `console.warn` |
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct ConsoleConfig {
     pub reporting: Option<ReportingText>,
@@ -13,8 +32,6 @@ pub struct ConsoleConfig {
     /// | `DEBUG` | `console.debug` |
     /// | `INFO` | `console.log` |
     /// | `WARN` | `console.warn` |
-    /// | `ERROR` | `console.error` |
-    ///
     pub use_console_log_levels: bool,
 }
 
