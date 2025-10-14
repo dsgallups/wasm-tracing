@@ -1,3 +1,25 @@
+# UNRELEASED
+### Added
+- Users now have the ability to use browser console methods (#25) that align with logging levels. i.e. `Level::WARN` logs will be emitted by `console.warn`. This value can be set via `ConsoleConfig { use_console_log_levels }`.
+
+### Changes
+- `ConsoleConfig` is now a struct. Behavior from the previous enumerations are available via the following:
+
+| Previous | New |
+| --------- | ---- |
+| `ConsoleConfig::NoReporting` | `ConsoleConfig::no_reporting()` |
+| `ConsoleConfig::ReportWithoutConsoleColor` | `ConsoleConfig::report_without_console_color()` |
+| `ConsoleConfig::ReportWithConsoleColor` | `ConsoleConfig::report_with_console_color` |
+
+- `ConsoleConfig` now has an interior `Option<ReportingText>` used to identify how the text should be displayed
+in the console.
+
+
+### Contributions
+- @jtfmumm for #25!
+
+
+
 # 2.1.0 (Auguest 4, 2025)
 ### Changes
 * chore: update README.md and CHANGELOG.md by @dsgallups in https://github.com/dsgallups/wasm-tracing/pull/18
